@@ -1,5 +1,7 @@
 const createError = require("http-errors");
 const express = require("express");
+const port = process.env.PORT || 3000;
+const http = require("http");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
@@ -41,5 +43,8 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render("error");
 });
-
+const server = http.createServer(app);
+server.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+});
 module.exports = app;
