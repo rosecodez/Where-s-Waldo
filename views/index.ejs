@@ -7,14 +7,31 @@
   <title>Where's Waldo</title>
 </head>
 <body>
+  <div id="square" class="border-4 border-solid border-rose-700 w-[35px] h-[45px] position: absolute"></div>
+  <div id="square" class="border-4 border-solid border-green-700 w-[35px] h-[45px] position: absolute"></div>
   <div id="image-container">
-    <img src="/photos/where-s-waldo-field-of-dwarves-58b18agb9zfd8zuz.webp" alt="Where’s Waldo - Field of Dwarves">
-    <div id="square" class="border-4 border-solid border-rose-700 w-[35px] h-[45px]"></div>
+    <img src="/photos/where-s-waldo-field-of-dwarves-58b18agb9zfd8zuz.webp" id="fieldOfDwarves" alt="Where’s Waldo - Field of Dwarves">
   </div>
   
 </body>
 <script>
+  let images = document.getElementsByTagName('img');
+  let length = images.length;
   
+  for (let i = 0; i < length; i++) {
+    images[i].onclick = function(e){
+      let ratioX = e.target.naturalWidth / e.target.offsetWidth;
+      let ratioY = e.target.naturalHeight / e.target.offsetHeight;
+
+      let domX = e.x + window.pageXOffset - e.target.offsetLeft;
+      let domY = e.y + window.pageYOffset - e.target.offsetTop;
+
+      let imgX = Math.floor(domX * ratioX);
+      let imgY = Math.floor(domY * ratioY);
+
+      console.log(imgX, imgY);
+    }
+  }
 </script>
 </html>
 
