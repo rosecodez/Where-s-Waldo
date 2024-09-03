@@ -8,6 +8,9 @@ const logger = require("morgan");
 const { PrismaClient } = require("@prisma/client");
 const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
 
+const cloudinary = require("cloudinary").v2;
+const upload = require("./middleware/multer-config");
+
 require("dotenv").config();
 
 const indexRouter = require("./routes/index");
@@ -24,6 +27,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+
+// Cloudinary configuration
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
