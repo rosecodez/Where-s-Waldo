@@ -15,23 +15,46 @@
   
 </body>
 <script>
+  // for every image console log the imgX img Y = position of mouse
   let images = document.getElementsByTagName('img');
   let length = images.length;
   
-  for (let i = 0; i < length; i++) {
-    images[i].onclick = function(e){
-      let ratioX = e.target.naturalWidth / e.target.offsetWidth;
-      let ratioY = e.target.naturalHeight / e.target.offsetHeight;
 
-      let domX = e.x + window.pageXOffset - e.target.offsetLeft;
-      let domY = e.y + window.pageYOffset - e.target.offsetTop;
+  let waldoPosition = [[846,29],[841,35],[851,37],[846,48]]
 
-      let imgX = Math.floor(domX * ratioX);
-      let imgY = Math.floor(domY * ratioY);
+  function imageRange(array) {
+    console.log(array[0], array[1], array[2], array[3]);
+    for (let i = 0; i < length; i++) {
+      images[i].onclick = function(e){
+        let ratioX = e.target.naturalWidth / e.target.offsetWidth;
+        let ratioY = e.target.naturalHeight / e.target.offsetHeight;
 
-      console.log(imgX, imgY);
+        let domX = e.x + window.pageXOffset - e.target.offsetLeft;
+        let domY = e.y + window.pageYOffset - e.target.offsetTop;
+
+        let imgX = Math.floor(domX * ratioX);
+        let imgY = Math.floor(domY * ratioY);
+        
+        console.log("imgxy array", [imgX, imgY])
+        console.log("waldo position", waldoPosition[1])
+        // determine if clicked position is close within 4px to waldo's position
+        if (waldoPosition.some(([x, y]) => Math.abs(x - imgX) <= 4 && Math.abs(y - imgY) <= 4)) {
+          console.log("yay! you found Waldo")
+        } else {
+          console.log("ouch, keep trying!")
+        }
+        // waldo's position?
+        /* when I click on that image,
+          if the mouse position is not in  the same range of waldo's position,
+          then render over the red div
+          else,
+          render the green div! 
+        */
+      }
     }
   }
+  imageRange(waldoPosition)
+
 </script>
 </html>
 
