@@ -7,8 +7,8 @@
   <title>Where's Waldo</title>
 </head>
 <body>
-  <div id="square" class="border-4 border-solid border-rose-700 w-[35px] h-[45px] position: absolute"></div>
-  <div id="square" class="border-4 border-solid border-green-700 w-[35px] h-[45px] position: absolute"></div>
+  <div id="redSquare" class="hidden border-4 border-solid border-rose-700 w-[35px] h-[45px] position: absolute"></div>
+  <div id="greenSquare" class="hidden border-4 border-solid border-green-700 w-[35px] h-[45px] position: absolute"></div>
   <div id="image-container">
     <img src="/photos/where-s-waldo-field-of-dwarves-58b18agb9zfd8zuz.webp" id="fieldOfDwarves" alt="Where’s Waldo - Field of Dwarves">
   </div>
@@ -18,7 +18,9 @@
   // for every image console log the imgX img Y = position of mouse
   let images = document.getElementsByTagName('img');
   let length = images.length;
-  
+
+  let redSquare = document.getElementById('redSquare')
+  let greenSquare = document.getElementById('greenSquare');
 
   let waldoPosition = [[846,29],[841,35],[851,37],[846,48]]
 
@@ -39,17 +41,19 @@
         console.log("waldo position", waldoPosition[1])
         // determine if clicked position is close within 4px to waldo's position
         if (waldoPosition.some(([x, y]) => Math.abs(x - imgX) <= 4 && Math.abs(y - imgY) <= 4)) {
-          console.log("yay! you found Waldo")
+          console.log("yay! you found Waldo");
+          greenSquare.style.left = `${e.clientX - 15}px`;
+          greenSquare.style.top = `${e.clientY - 15}px`;
+          greenSquare.classList.remove('hidden');
+          redSquare.classList.add('hidden');
         } else {
           console.log("ouch, keep trying!")
+          redSquare.style.left = `${e.clientX - 15}px`;
+          redSquare.style.top = `${e.clientY - 15}px`;
+          redSquare.classList.remove('hidden');
+          greenSquare.classList.add('hidden');
         }
-        // waldo's position?
-        /* when I click on that image,
-          if the mouse position is not in  the same range of waldo's position,
-          then render over the red div
-          else,
-          render the green div! 
-        */
+
       }
     }
   }
