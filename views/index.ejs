@@ -15,6 +15,7 @@
 
 </body>
 <script>
+  
   // for every image console log the imgX img Y = position of mouse
   let images = document.getElementsByTagName('img');
   let length = images.length;
@@ -39,8 +40,8 @@
         
         console.log("imgxy array", [imgX, imgY])
         console.log("waldo position", waldoPosition[1])
-        // determine if clicked position is close within 4px to waldo's position
-        if (waldoPosition.some(([x, y]) => Math.abs(x - imgX) <= 4 && Math.abs(y - imgY) <= 4)) {
+        // determine if clicked position is close within 5px to waldo's position
+        if (waldoPosition.some(([x, y]) => Math.abs(x - imgX) <= 5 && Math.abs(y - imgY) <= 5)) {
           console.log("yay! you found Waldo");
           greenSquare.style.left = `${e.clientX - 15}px`;
           greenSquare.style.top = `${e.clientY - 15}px`;
