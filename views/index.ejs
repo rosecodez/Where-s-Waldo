@@ -11,35 +11,56 @@
   >
     <div id="header" class="text-2xl">Where's Waldo?</div>
     <div
-      id="redSquare"
-      class="hidden border-4 border-solid border-rose-700 w-[35px] h-[45px] absolute"
-    ></div>
-    <div
-      id="greenSquare"
-      class="hidden border-4 border-solid border-green-700 w-[35px] h-[45px] absolute"
-    ></div>
-    <div id="image-container">
-      <img
-        src="https://res.cloudinary.com/dbmnceulk/image/upload/v1725403832/Wheres_Waldo/bb3i2nkfaul77zksdrej.webp"
-        alt="Where’s Waldo - Field of Dwarves"
-      />
+      id="gameIntro"
+      class="bg-[url('/photos/waldo-16_9.webp')] bg-cover bg-center h-96 w-full bg-gray-600 flex justify-center items-center"
+    >
+      <button
+        id="startGame"
+        class="absolute px-4 py-2 bg-gray-400 text-white rounded"
+        onclick="startGame()"
+      >
+        Start game
+      </button>
     </div>
 
-    <div
-      id="successModal"
-      class="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center hidden"
-    >
-      <div class="bg-white p-8 rounded shadow-lg max-w-xs w-full">
-        <h2 class="text-lg font-bold mb-4">Well done! You found Waldo!</h2>
+    <div id="gameContent" class="hidden">
+      <div
+        id="redSquare"
+        class="hidden border-4 border-solid border-rose-700 w-[35px] h-[45px] absolute"
+      ></div>
+      <div
+        id="greenSquare"
+        class="hidden border-4 border-solid border-green-700 w-[35px] h-[45px] absolute"
+      ></div>
+      <div id="image-container">
+        <img
+          src="https://res.cloudinary.com/dbmnceulk/image/upload/v1725403832/Wheres_Waldo/bb3i2nkfaul77zksdrej.webp"
+          alt="Where’s Waldo - Field of Dwarves"
+        />
+      </div>
+
+      <div
+        id="successModal"
+        class="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center hidden"
+      >
+        <div class="bg-white p-8 rounded shadow-lg max-w-xs w-full">
+          <h2 class="text-lg font-bold mb-4">Well done! You found Waldo!</h2>
+        </div>
       </div>
     </div>
   </body>
   <script>
+    let gameContent = document.getElementById("gameContent");
+    let gameIntro = document.getElementById("gameIntro");
     let image = document.getElementsByTagName("img");
     let redSquare = document.getElementById("redSquare");
     let greenSquare = document.getElementById("greenSquare");
     let successModal = document.getElementById("successModal");
 
+    function startGame() {
+      gameContent.classList.remove("hidden");
+      gameIntro.classList.add("hidden");
+    }
     async function fetchImages() {
       const url = "http://localhost:3000/images/";
       try {
