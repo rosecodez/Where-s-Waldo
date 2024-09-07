@@ -24,8 +24,22 @@
         alt="Where’s Waldo - Field of Dwarves"
       />
     </div>
+
+    <div
+      id="successModal"
+      class="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center hidden"
+    >
+      <div class="bg-white p-8 rounded shadow-lg max-w-xs w-full">
+        <h2 class="text-lg font-bold mb-4">Well done! You found Waldo!</h2>
+      </div>
+    </div>
   </body>
   <script>
+    let image = document.getElementsByTagName("img");
+    let redSquare = document.getElementById("redSquare");
+    let greenSquare = document.getElementById("greenSquare");
+    let successModal = document.getElementById("successModal");
+
     async function fetchImages() {
       const url = "http://localhost:3000/images/";
       try {
@@ -42,14 +56,8 @@
         console.error(error.message);
       }
     }
-    fetchImages();
 
-    // for every image console log the imgX img Y = position of mouse
-    let image = document.getElementsByTagName("img");
-    let redSquare = document.getElementById("redSquare");
-    let greenSquare = document.getElementById("greenSquare");
-
-    async function imageRange() {
+    async function gameLogic() {
       const [links, wps, names] = await fetchImages();
 
       let counter = 0;
@@ -60,13 +68,14 @@
             setTimeout(() => {
               greenSquare.style.display = "none";
               greenSquare.classList.add("hidden");
+              successModal.classList.add("hidden");
               counter += 1;
               if (counter > names.length - 1) {
                 counter = 0;
               }
               image[i].src = links[counter];
               image[i].alt = names[counter];
-            }, 2000);
+            }, 3000);
           }
 
           let ratioX = e.target.naturalWidth / e.target.offsetWidth;
@@ -86,15 +95,17 @@
               ([x, y]) => Math.abs(x - imgX) <= 5 && Math.abs(y - imgY) <= 5
             )
           ) {
-            console.log("yay! you found Waldo");
             nextPic();
             greenSquare.style.left = `${e.clientX - 15}px`;
             greenSquare.style.top = `${e.clientY - 15}px`;
             greenSquare.classList.remove("hidden");
             redSquare.classList.add("hidden");
+
+            setTimeout(() => {
+              successModal.classList.remove("hidden");
+            }, 1000);
             greenSquare.style.display = "";
           } else {
-            console.log("ouch, keep trying!");
             redSquare.style.left = `${e.clientX - 15}px`;
             redSquare.style.top = `${e.clientY - 15}px`;
             redSquare.classList.remove("hidden");
@@ -103,6 +114,6 @@
         };
       }
     }
-    imageRange();
+    gameLogic();
   </script>
 </html>
