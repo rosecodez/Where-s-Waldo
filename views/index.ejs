@@ -1,65 +1,108 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <title>Where's Waldo</title>
-</head>
-<body>
-  <div id="redSquare" class="hidden border-4 border-solid border-rose-700 w-[35px] h-[45px] position: absolute"></div>
-  <div id="greenSquare" class="hidden border-4 border-solid border-green-700 w-[35px] h-[45px] position: absolute"></div>
-  <div id="image-container">
-    <img src="/photos/where-s-waldo-field-of-dwarves-58b18agb9zfd8zuz.webp" id="fieldOfDwarves" alt="Where’s Waldo - Field of Dwarves">
-  </div>
-
-</body>
-<script>
-  
-  // for every image console log the imgX img Y = position of mouse
-  let images = document.getElementsByTagName('img');
-  let length = images.length;
-
-  let redSquare = document.getElementById('redSquare')
-  let greenSquare = document.getElementById('greenSquare');
-
-  let waldoPosition = [[846,29],[841,35],[851,37],[846,48]]
-
-  function imageRange(array) {
-    console.log(array[0], array[1], array[2], array[3]);
-    for (let i = 0; i < length; i++) {
-      images[i].onclick = function(e){
-        let ratioX = e.target.naturalWidth / e.target.offsetWidth;
-        let ratioY = e.target.naturalHeight / e.target.offsetHeight;
-
-        let domX = e.x + window.pageXOffset - e.target.offsetLeft;
-        let domY = e.y + window.pageYOffset - e.target.offsetTop;
-
-        let imgX = Math.floor(domX * ratioX);
-        let imgY = Math.floor(domY * ratioY);
-        
-        console.log("imgxy array", [imgX, imgY])
-        console.log("waldo position", waldoPosition[1])
-        // determine if clicked position is close within 5px to waldo's position
-        if (waldoPosition.some(([x, y]) => Math.abs(x - imgX) <= 5 && Math.abs(y - imgY) <= 5)) {
-          console.log("yay! you found Waldo");
-          greenSquare.style.left = `${e.clientX - 15}px`;
-          greenSquare.style.top = `${e.clientY - 15}px`;
-          greenSquare.classList.remove('hidden');
-          redSquare.classList.add('hidden');
-        } else {
-          console.log("ouch, keep trying!")
-          redSquare.style.left = `${e.clientX - 15}px`;
-          redSquare.style.top = `${e.clientY - 15}px`;
-          redSquare.classList.remove('hidden');
-          greenSquare.classList.add('hidden');
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com" defer></script>
+    <title>Where's Waldo</title>
+  </head>
+  <body
+    class="flex flex-col items-center justify-center gap-6 pt-6 font-sans pr-10 pl-10"
+  >
+    <div id="header" class="text-2xl">Where's Waldo?</div>
+    <div
+      id="redSquare"
+      class="hidden border-4 border-solid border-rose-700 w-[35px] h-[45px] absolute"
+    ></div>
+    <div
+      id="greenSquare"
+      class="hidden border-4 border-solid border-green-700 w-[35px] h-[45px] absolute"
+    ></div>
+    <div id="image-container">
+      <img
+        src="https://res.cloudinary.com/dbmnceulk/image/upload/v1725403832/Wheres_Waldo/bb3i2nkfaul77zksdrej.webp"
+        alt="Where’s Waldo - Field of Dwarves"
+      />
+    </div>
+  </body>
+  <script>
+    async function fetchImages() {
+      const url = "http://localhost:3000/images/";
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error("Failed to fetch images: ", response.status);
         }
-
+        const json = await response.json();
+        const links = json.map((item) => item.link);
+        const wps = json.map((item) => item.waldoPosition);
+        const names = json.map((item) => item.name);
+        return [links, wps, names];
+      } catch (error) {
+        console.error(error.message);
       }
     }
-  }
-  imageRange(waldoPosition)
+    fetchImages();
 
-</script>
+    // for every image console log the imgX img Y = position of mouse
+    let image = document.getElementsByTagName("img");
+    let redSquare = document.getElementById("redSquare");
+    let greenSquare = document.getElementById("greenSquare");
+
+    async function imageRange() {
+      const [links, wps, names] = await fetchImages();
+
+      let counter = 0;
+
+      for (let i = 0; i < image.length; i++) {
+        image[i].onclick = function (e) {
+          function nextPic() {
+            setTimeout(() => {
+              greenSquare.style.display = "none";
+              greenSquare.classList.add("hidden");
+              counter += 1;
+              if (counter > names.length - 1) {
+                counter = 0;
+              }
+              image[i].src = links[counter];
+              image[i].alt = names[counter];
+            }, 2000);
+          }
+
+          let ratioX = e.target.naturalWidth / e.target.offsetWidth;
+          let ratioY = e.target.naturalHeight / e.target.offsetHeight;
+
+          let domX = e.x + window.pageXOffset - e.target.offsetLeft;
+          let domY = e.y + window.pageYOffset - e.target.offsetTop;
+
+          let imgX = Math.floor(domX * ratioX);
+          let imgY = Math.floor(domY * ratioY);
+
+          console.log("imgxy array", [imgX, imgY]);
+          console.log("waldo position", wps[counter]);
+          // determine if clicked position is close within 5px to waldo's position
+          if (
+            wps[counter].some(
+              ([x, y]) => Math.abs(x - imgX) <= 5 && Math.abs(y - imgY) <= 5
+            )
+          ) {
+            console.log("yay! you found Waldo");
+            nextPic();
+            greenSquare.style.left = `${e.clientX - 15}px`;
+            greenSquare.style.top = `${e.clientY - 15}px`;
+            greenSquare.classList.remove("hidden");
+            redSquare.classList.add("hidden");
+            greenSquare.style.display = "";
+          } else {
+            console.log("ouch, keep trying!");
+            redSquare.style.left = `${e.clientX - 15}px`;
+            redSquare.style.top = `${e.clientY - 15}px`;
+            redSquare.classList.remove("hidden");
+            greenSquare.classList.add("hidden");
+          }
+        };
+      }
+    }
+    imageRange();
+  </script>
 </html>
-
