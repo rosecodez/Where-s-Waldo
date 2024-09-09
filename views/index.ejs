@@ -10,6 +10,7 @@
     class="flex flex-col items-center justify-center gap-6 pt-6 font-sans pr-10 pl-10"
   >
     <div id="header" class="text-2xl">Where's Waldo?</div>
+
     <div
       id="gameIntro"
       class="bg-[url('/photos/waldo-16_9.webp')] bg-cover bg-center h-96 w-full bg-gray-600 flex justify-center items-center"
@@ -23,7 +24,8 @@
       </button>
     </div>
 
-    <div id="gameContent" class="hidden">
+    <div id="gameContent" class="hidden flex flex-col">
+      <div id="timer" class="text-2xl self-center">00:00</div>
       <div
         id="redSquare"
         class="hidden border-4 border-solid border-rose-700 w-[35px] h-[45px] absolute"
@@ -56,11 +58,15 @@
     let redSquare = document.getElementById("redSquare");
     let greenSquare = document.getElementById("greenSquare");
     let successModal = document.getElementById("successModal");
+    let timer;
 
     function startGame() {
       gameContent.classList.remove("hidden");
       gameIntro.classList.add("hidden");
+      setTimer();
+      gameLogic();
     }
+
     async function fetchImages() {
       const url = "http://localhost:3000/images/";
       try {
@@ -76,6 +82,39 @@
       } catch (error) {
         console.error(error.message);
       }
+    }
+
+    function setTimer() {
+      let min = 0;
+      let sec = 0;
+
+      timer = setInterval(function () {
+        sec++;
+
+        // when second reaches 60,
+        if (sec === 60) {
+          // reset second
+          sec = 0;
+          // and add a minute to timer
+          min++;
+        }
+
+        let minutes;
+        let seconds;
+
+        if (min < 10) {
+          minutes = `0${min}`;
+        } else {
+          minutes = `${min}`;
+        }
+
+        if (sec < 10) {
+          seconds = `0${sec}`;
+        } else {
+          seconds = `${sec}`;
+        }
+        document.getElementById("timer").innerHTML = `${minutes}:${seconds}`;
+      }, 1000);
     }
 
     async function gameLogic() {
@@ -108,8 +147,6 @@
           let imgX = Math.floor(domX * ratioX);
           let imgY = Math.floor(domY * ratioY);
 
-          console.log("imgxy array", [imgX, imgY]);
-          console.log("waldo position", wps[counter]);
           // determine if clicked position is close within 5px to waldo's position
           if (
             wps[counter].some(
@@ -121,9 +158,9 @@
             greenSquare.style.top = `${e.clientY - 15}px`;
             greenSquare.classList.remove("hidden");
             redSquare.classList.add("hidden");
-
             setTimeout(() => {
               successModal.classList.remove("hidden");
+              clearInterval(timer);
             }, 1000);
             greenSquare.style.display = "";
           } else {
@@ -135,6 +172,5 @@
         };
       }
     }
-    gameLogic();
   </script>
 </html>
