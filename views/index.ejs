@@ -133,6 +133,9 @@
               if (counter > names.length - 1) {
                 counter = 0;
               }
+              // reset timer
+              document.getElementById("timer").innerHTML = `00:00`;
+              setTimer();
               image[i].src = links[counter];
               image[i].alt = names[counter];
             }, 3000);
