@@ -6,7 +6,7 @@ router.get("/images", async function (req, res, next) {
   try {
     const images = await prisma.picture.findMany();
     console.log(images);
-    res.json(images);
+    res.status(200).json(images);
   } catch (err) {
     next(err);
   }
